@@ -40,7 +40,7 @@ def home():
         f"/api/v1.0/precipitation<br/>"
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
-        f"/api/v1.0/<start_date>/<end_date><br/>"
+        f"/api/v1.0/start_date/end_date<br/>"
     )
 #homepage
 # @app.route("/")
@@ -122,11 +122,14 @@ def calc_temps(start_date, end_date):
         
     Returns:
         TMIN, TAVG, and TMAX"""
-    
-    return session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+
+    # Create a database session object
+    session = Session(engine)
+
+    results4= session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
             filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).all()
 
-  
+    return jsonify(results4)
 
 if __name__ == '__main__':
     app.run(debug=True)
